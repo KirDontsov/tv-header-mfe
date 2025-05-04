@@ -1,0 +1,23 @@
+{
+  "name": "@top-vybor/header-mfe",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 9002",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.5",
+    "pinia": "^3.0.2",
+    "single-spa-vue": "^3.0.1",
+    "tailwindcss": "^4.1.5",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.2",
+    "vite": "^6.3.1"
+  },
+  "packageManager": "yarn@4.9.1"
+}
