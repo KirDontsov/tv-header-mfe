@@ -1,6 +1,6 @@
 <template>
   <nav
-    class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-700 dark:border-gray-700"
+    class="fixed top-0 z-50 w-full bg-white border-b dark:bg-gray-700 dark:border-gray-700"
   >
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
       <div class="flex items-center justify-between">
@@ -13,32 +13,10 @@
           </a>
         </div>
         <div class="flex items-center justify-between w-full">
-          <a
-            v-if="!isHomeRoute"
-            class="flex items-center gap-2 cursor-pointer"
-            href="/"
-          >
-            <svg
-              class="w-4 h-4 text-gray-800 dark:text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 12h14M5 12l4-4m-4 4 4 4"
-              />
-            </svg>
-            Back
-          </a>
-          <div v-else></div>
-          <div class="flex items-center ms-3">
+          <div/>
+          <div class="flex items-center gap-4 ms-3">
+            <div class="text-nowrap">ID: {{ userId ?? '' }}</div>
+            <div class="text-nowrap">Баланс: {{ balance ?? '' }} &#8381</div>
             <div class="w-full flex items-center">
               <button
                 type="button"
@@ -61,9 +39,30 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { onMounted, ref } from "vue";
+import { getAvitoBalance, getAvitoProfile, getAvitoToken } from "./shared";
+import { useCookies } from "./entities";
 
-const isHomeRoute = computed(() => window.location.pathname === "/");
+const { value: avito_token } = useCookies("avito_token");
+
+const balance = ref();
+
+const { value: userId, set: setUserId } = useCookies('user_id', null);
+
+onMounted(() => {
+  if (!avito_token.value) {
+    getAvitoToken();
+  } else {
+    getAvitoBalance({ avito_token: avito_token.value }).then(({ data }) => {
+      balance.value = data?.balance / 100;
+    });
+    getAvitoProfile({ avito_token: avito_token.value }).then(({ data }) => {
+      if (data) {
+        setUserId(data?.id || null)
+      }
+    });
+  }
+});
 </script>
 
 <style></style>
